@@ -1,0 +1,100 @@
+{
+  "port": "Durban",
+  "source_document": "Tariff Book TRANSNET NATIONAL PORTS AUTHORITY April 2024 to March 2025 Twenty Third Edition 1 April 2024",
+  "currency": "ZAR",
+  "rules": [
+    {
+      "name": "Light Dues",
+      "tariff_section": "1.1.1",
+      "method": "per_100t",
+      "rate": 117.08,
+      "movements": 1,
+      "minimum": null,
+      "notes": "Charged at the first South African port of call, valid for 60 days within SA waters. Rate for 'All other vessels' per 100 GT or part thereof."
+    },
+    {
+      "name": "Port Dues",
+      "tariff_section": "4.1.1",
+      "method": "per_100t_plus_period",
+      "basic_rate": 192.73,
+      "period_rate": 57.79,
+      "movements": 1,
+      "minimum": null,
+      "notes": "Basic fee per 100 GT or part thereof, plus a daily rate per 100 GT or part thereof for each 24-hour period or part thereof. Applies generally to all vessels in Durban."
+    },
+    {
+      "name": "Towage Dues",
+      "tariff_section": "3.6",
+      "method": "banded_per_100t",
+      "bands": [
+        {
+          "min": 0,
+          "max": 2000,
+          "base": 8140.0,
+          "increment_floor": 0,
+          "increment": 0
+        },
+        {
+          "min": 2001,
+          "max": 10000,
+          "base": 12633.99,
+          "increment_floor": 2000,
+          "increment": 268.99
+        },
+        {
+          "min": 10001,
+          "max": 50000,
+          "base": 38494.51,
+          "increment_floor": 10000,
+          "increment": 84.95
+        },
+        {
+          "min": 50001,
+          "max": 100000,
+          "base": 73118.07,
+          "increment_floor": 50000,
+          "increment": 32.24
+        },
+        {
+          "min": 100001,
+          "max": null,
+          "base": 93548.13,
+          "increment_floor": 100000,
+          "increment": 23.65
+        }
+      ],
+      "movements": 2,
+      "minimum": null,
+      "notes": "Banded rates for Durban based on vessel GT. Charged per service (entering and leaving). 'Up to 2000 tons' is a flat fee. Subsequent bands have a base fee plus an incremental charge per 100 GT above the band's floor."
+    },
+    {
+      "name": "VTS Dues",
+      "tariff_section": "2.1.1",
+      "method": "per_gt",
+      "rate": 0.65,
+      "movements": 1,
+      "minimum": 235.52,
+      "notes": "Charged per GT per port call for Durban. Subject to a minimum fee."
+    },
+    {
+      "name": "Pilotage Dues",
+      "tariff_section": "3.3",
+      "method": "basic_plus_per_100t",
+      "basic_fee": 18608.61,
+      "rate": 9.72,
+      "movements": 2,
+      "minimum": null,
+      "notes": "Basic fee per service (entering or leaving) plus a rate per 100 GT or part thereof for Durban."
+    },
+    {
+      "name": "Running of Vessel Lines",
+      "tariff_section": "3.8",
+      "method": "basic_plus_per_100t",
+      "basic_fee": 2801.91,
+      "rate": 13.68,
+      "movements": 2,
+      "minimum": null,
+      "notes": "Charged as berthing services. Basic fee per service (entering or leaving) plus a rate per 100 GT or part thereof. Durban uses the 'Other Ports' column as it is not explicitly listed in the table."
+    }
+  ]
+}
