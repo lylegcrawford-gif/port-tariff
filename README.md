@@ -1,5 +1,7 @@
 # Port Dues Calculator
 
+**Live demo:** https://lylegcrawford-gif.github.io/port-tariff/ — point-and-click calculator for six South African ports, in ZAR or US$.
+
 Reads a **port tariff PDF** plus a **vessel profile** and calculates the port dues payable for
 a vessel's call — **Light, Port, Towage, VTS, Pilotage and Running-of-lines (Berthing) dues**.
 
