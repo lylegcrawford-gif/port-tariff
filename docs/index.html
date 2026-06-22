@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Port Dues Calculator — South Africa</title>
+<style>
+  :root { --ink:#1a1a1a; --muted:#6b6b6b; --line:#e4e4e4; --bg:#ffffff; --surface:#f6f6f4; --accent:#0c447c; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         color: var(--ink); background: #fafaf8; margin: 0; padding: 2rem 1rem; line-height: 1.5; }
+  .wrap { max-width: 660px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 1.5rem; }
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem 1.5rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 1rem; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  input, select { width: 100%; height: 38px; padding: 0 10px; font-size: 15px; border: 1px solid var(--line);
+                  border-radius: 8px; background: var(--bg); color: var(--ink); }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .btns { display: flex; gap: 8px; margin: 0.25rem 0 1.5rem; }
+  button { font-size: 14px; padding: 8px 14px; border: 1px solid var(--line); background: var(--bg);
+           border-radius: 8px; cursor: pointer; color: var(--ink); }
+  button:hover { background: var(--surface); }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .row { display: flex; justify-content: space-between; align-items: baseline; padding: 11px 2px; border-bottom: 1px solid var(--line); }
+  .row .nm { font-size: 15px; } .row .sec { font-size: 12px; color: #9a9a9a; }
+  .row .amt { font-size: 15px; font-weight: 600; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; background: var(--surface);
+           border-radius: 8px; padding: 1rem 1.25rem; margin-top: 12px; }
+  .total .lbl { font-size: 13px; color: var(--muted); } .total .val { font-size: 24px; font-weight: 600; }
+  .note { font-size: 12px; color: #9a9a9a; margin-top: 10px; }
+  #fxWrap { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Port Dues Calculator</h1>
+  <p class="sub">South African ports &middot; rules extracted from the Transnet 2024&ndash;25 tariff</p>
+  <div class="card">
+    <div class="grid">
+      <div>
+        <label for="port">Port</label>
+        <select id="port">
+          <option>Durban</option>
+          <option>Cape Town</option>
+          <option>Richards Bay</option>
+          <option>Port Elizabeth / Ngqura</option>
+          <option>Saldanha</option>
+          <option>East London</option>
+        </select>
+      </div>
+      <div><label for="gt">Gross tonnage (GT)</label><input id="gt" type="number" value="51300" min="0" step="1" /></div>
+      <div><label for="days">Days alongside</label><input id="days" type="number" value="3.39" min="0" step="0.01" /></div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="ccy">Currency</label>
+        <select id="ccy"><option value="ZAR">ZAR (R)</option><option value="USD">US$ (USD)</option></select>
+      </div>
+      <div id="fxWrap">
+        <label for="fx">Exchange rate (ZAR per US$)</label>
+        <input id="fx" type="number" value="18.50" min="0.01" step="0.01" />
+      </div>
+    </div>
+    <div class="btns">
+      <button class="primary" id="calc">Calculate</button>
+      <button id="example">Reset to SUDESTADA</button>
+    </div>
+    <div id="rows"></div>
+    <div class="total"><span class="lbl" id="totlbl">Total port dues</span><span class="val" id="total">R 0.00</span></div>
+    <p class="note" id="note"></p>
+  </div>
+</div>
+<script>
+(function(){
+  var per100 = function(t){ return Math.ceil(t/100); };
+
+  // Per-port rates extracted from the Transnet National Ports Authority tariff (2024-25).
+  // Light Dues (1.1.1) and Port Dues (4.1.1) are national; the rest vary by port column.
+  var PORTS = {
+    "Durban":                 {vts:0.65, pilot:{b:18608.61,r:9.72},  berth:{b:2801.91,r:13.68},
+      tow:[[0,2000,8140.00,0,0],[2001,10000,12633.99,2000,268.99],[10001,50000,38494.51,10000,84.95],[50001,100000,73118.07,50000,32.24],[100001,null,93548.13,100000,0]]},
+    "Cape Town":              {vts:0.54, pilot:{b:6342.39,r:10.20},  berth:{b:3052.33,r:14.92},
+      tow:[[0,2000,5411.47,0,0],[2001,10000,7898.57,2000,194.63],[10001,50000,27741.85,10000,64.52],[50001,100000,53978.33,50000,47.32],[100001,null,79569.67,100000,47.32]]},
+    "Richards Bay":           {vts:0.54, pilot:{b:30960.46,r:10.93}, berth:{b:3175.89,r:13.46},
+      tow:[[0,2000,7001.67,0,0],[2001,10000,13020.67,2000,275.32],[10001,50000,39999.88,10000,101.08],[50001,100000,79999.76,50000,30.11],[100001,null,103999.70,100000,23.65]]},
+    "Port Elizabeth / Ngqura":{vts:0.54, pilot:{b:8970.00,r:14.33},  berth:{b:3838.62,r:18.72},
+      tow:[[0,2000,7206.98,0,0],[2001,10000,11168.45,2000,237.53],[10001,50000,32257.98,10000,73.10],[50001,100000,64515.95,50000,21.50],[100001,null,82542.46,100000,21.50]]},
+    "Saldanha":               {vts:0.65, pilot:{b:9673.57,r:13.66},  berth:{b:4006.34,r:16.97},
+      tow:[[0,2000,9038.42,0,0],[2001,10000,15378.78,2000,327.43],[10001,50000,47311.70,10000,103.23],[50001,100000,90322.33,50000,27.97],[100001,null,111827.63,100000,47.32]]},
+    "East London":            {vts:0.54, pilot:{b:6547.45,r:10.49},  berth:{b:2801.91,r:13.68},
+      tow:[[0,2000,5622.16,0,0],[2001,10000,8152.14,2000,200.97],[10001,50000,27956.91,10000,66.67],[50001,100000,55913.82,50000,25.80],[100001,null,55913.82,100000,25.80]]}
+  };
+
+  function pickBand(bands, gt){ for(var i=0;i<bands.length;i++){var b=bands[i]; if(gt>=b[0]&&(b[1]===null||gt<=b[1]))return b;} return bands[bands.length-1]; }
+
+  function compute(portName, gt, days){
+    var p = PORTS[portName];
+    var b = pickBand(p.tow, gt);
+    return [
+      {name:'Light Dues', sec:'1.1.1', amt: per100(gt)*117.08},
+      {name:'Port Dues', sec:'4.1.1', amt: per100(gt)*(192.73 + 57.79*days)},
+      {name:'Towage Dues', sec:'3.6', amt: (b[2] + per100(Math.max(0,gt-b[3]))*b[4])*2},
+      {name:'VTS Dues', sec:'2.1.1', amt: Math.max(gt*p.vts, 235.52)},
+      {name:'Pilotage Dues', sec:'3.3', amt: (p.pilot.b + per100(gt)*p.pilot.r)*2},
+      {name:'Running of Vessel Lines', sec:'3.8', amt: (p.berth.b + per100(gt)*p.berth.r)*2}
+    ];
+  }
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  function money(zar, ccy, fx){
+    if (ccy === 'USD'){ var usd = zar / fx; return '$' + new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(usd); }
+    return 'R ' + new Intl.NumberFormat('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2}).format(zar);
+  }
+
+  function render(){
+    var port = $('port').value;
+    var gt = parseFloat($('gt').value) || 0;
+    var days = parseFloat($('days').value) || 0;
+    var ccy = $('ccy').value;
+    var fx = parseFloat($('fx').value) || 18.50;
+    $('fxWrap').style.display = (ccy === 'USD') ? 'block' : 'none';
+
+    var items = compute(port, gt, days);
+    var total = items.reduce(function(s,i){ return s+i.amt; }, 0);
+
+    $('rows').innerHTML = items.map(function(it){
+      return '<div class="row"><span class="nm">'+it.name+' <span class="sec">§'+it.sec+'</span></span><span class="amt">'+money(it.amt,ccy,fx)+'</span></div>';
+    }).join('');
+    $('total').textContent = money(total, ccy, fx);
+    $('totlbl').textContent = 'Total port dues — ' + port;
+
+    var n = $('note');
+    var isRef = (port==='Durban' && gt===51300 && Math.abs(days-3.39)<1e-9 && ccy==='ZAR');
+    if (isRef){
+      var t = 506830.83;
+      n.textContent = 'SUDESTADA reference: ground-truth total R '+new Intl.NumberFormat('en-ZA',{minimumFractionDigits:2}).format(t)+' (difference '+(100*(total-t)/t).toFixed(2)+'%).';
+    } else if (ccy==='USD'){
+      n.textContent = 'US$ figures are an indicative conversion at R'+fx.toFixed(2)+'/US$ — the tariff is set in ZAR. Edit the rate above.';
+    } else {
+      n.textContent = 'Most dues = ⌈GT/100⌉ × a rate; pilotage, towage and berthing × 2 for entering + leaving.';
+    }
+  }
+
+  ['port','gt','days','ccy','fx'].forEach(function(id){ $(id).addEventListener('input', render); $(id).addEventListener('change', render); });
+  $('calc').addEventListener('click', render);
+  $('example').addEventListener('click', function(){ $('port').value='Durban'; $('gt').value=51300; $('days').value=3.39; $('ccy').value='ZAR'; render(); });
+  render();
+})();
+</script>
+</body>
+</html>
