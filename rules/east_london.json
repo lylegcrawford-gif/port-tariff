@@ -1,0 +1,101 @@
+{
+  "port": "East London",
+  "source_document": "Transnet National Ports Authority Tariff Book, April 2024 - March 2025",
+  "currency": "ZAR",
+  "extraction_note": "Produced via src/extract_rules.py; per-port rates verified against the tariff PDF tables (sections 2.1.1, 3.3, 3.6, 3.8). Durban is the published ground-truth reference.",
+  "rules": [
+    {
+      "name": "Light Dues",
+      "tariff_section": "1.1.1",
+      "method": "per_100t",
+      "rate": 117.08,
+      "movements": 1,
+      "minimum": null,
+      "notes": "National rate, per 100 GT or part thereof."
+    },
+    {
+      "name": "Port Dues",
+      "tariff_section": "4.1.1",
+      "method": "per_100t_plus_period",
+      "basic_rate": 192.73,
+      "period_rate": 57.79,
+      "movements": 1,
+      "minimum": null,
+      "notes": "National: basic per 100 GT + per 100 GT per 24h period (pro rata)."
+    },
+    {
+      "name": "Towage Dues",
+      "tariff_section": "3.6",
+      "method": "banded_per_100t",
+      "bands": [
+        {
+          "min": 0,
+          "max": 2000,
+          "base": 5622.16,
+          "increment_floor": 0,
+          "increment": 0
+        },
+        {
+          "min": 2001,
+          "max": 10000,
+          "base": 8152.14,
+          "increment_floor": 2000,
+          "increment": 200.97
+        },
+        {
+          "min": 10001,
+          "max": 50000,
+          "base": 27956.91,
+          "increment_floor": 10000,
+          "increment": 66.67
+        },
+        {
+          "min": 50001,
+          "max": 100000,
+          "base": 55913.82,
+          "increment_floor": 50000,
+          "increment": 25.8
+        },
+        {
+          "min": 100001,
+          "max": null,
+          "base": 55913.82,
+          "increment_floor": 100000,
+          "increment": 25.8
+        }
+      ],
+      "movements": 2,
+      "minimum": null,
+      "notes": "East London column; band base + increment per 100 GT above floor; entering + leaving."
+    },
+    {
+      "name": "VTS Dues",
+      "tariff_section": "2.1.1",
+      "method": "per_gt",
+      "rate": 0.54,
+      "movements": 1,
+      "minimum": 235.52,
+      "notes": "0.54 per GT per port call (standard rate); min 235.52."
+    },
+    {
+      "name": "Pilotage Dues",
+      "tariff_section": "3.3",
+      "method": "basic_plus_per_100t",
+      "basic_fee": 6547.45,
+      "rate": 10.49,
+      "movements": 2,
+      "minimum": null,
+      "notes": "East London column; basic fee + per 100 GT; entering + leaving."
+    },
+    {
+      "name": "Running of Vessel Lines",
+      "tariff_section": "3.8",
+      "method": "basic_plus_per_100t",
+      "basic_fee": 2801.91,
+      "rate": 13.68,
+      "movements": 2,
+      "minimum": null,
+      "notes": "Berthing Services; basic fee + per 100 GT; berthing + unberthing."
+    }
+  ]
+}

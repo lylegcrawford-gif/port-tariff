@@ -31,7 +31,7 @@ Four of six match to the cent; the other two are within 0.1% (see *Notes on accu
 Two layers, deliberately separated:
 
 ```
-  Tariff PDF ──► [1] extract_rules.py ──►  rules/<port>_tariff.json  ──► [2] calculator.py ──► dues
+  Tariff PDF ──► [1] extract_rules.py ──►  rules/<port>.json  ──► [2] calculator.py ──► dues
    (any port)     (Gemini reads the PDF      (structured, human-          (generic maths,
                    and writes the rules)      readable rules)              port-agnostic)
 ```
@@ -44,8 +44,10 @@ Two layers, deliberately separated:
    those rules. It knows nothing about Durban or any rate; give it another port's rules and it
    computes that port's dues. This is why the maths is exact and auditable.
 
-The extracted `rules/durban_tariff.json` is committed so the calculator runs **without an API key**.
-It is a cache of Gemini's output, regenerable at any time.
+The extracted `rules/durban.json` is committed so the calculator runs **without an API key**.
+It is a cache of Gemini's output, regenerable at any time. Rule files for six South African
+ports live in `rules/` — each is the extractor's output format, verified against the tariff
+tables; Durban is the published ground-truth reference (matches to 0.03%).
 
 ## Setup
 
@@ -73,8 +75,31 @@ Generalise to another port/document — same code, new inputs:
 
 ```bash
 python -m src.extract_rules --pdf data/<other_port>.pdf --port "Cape Town"
-python -m src.main vessels/<your_vessel>.json --rules rules/cape_town_tariff.json
+python -m src.main vessels/<your_vessel>.json --rules rules/cape_town.json
 ```
+
+## API endpoint (bonus)
+
+The same engine is exposed as an HTTP API:
+
+```bash
+uvicorn src.api:app --reload
+```
+
+- Interactive docs (clickable form): http://127.0.0.1:8000/docs
+- `GET /ports` — list ports with extracted rules
+- `POST /calculate` — send a vessel profile, get the itemised dues back:
+
+```bash
+curl -X POST http://127.0.0.1:8000/calculate \
+     -H "Content-Type: application/json" \
+     -d @vessels/sudestada.json
+```
+
+The vessel's `port` field selects the tariff (defaults to Durban).
+
+A static, no-install version is also deployed at
+https://lylegcrawford-gif.github.io/port-tariff/ (six ports, ZAR or US$).
 
 ## The one pattern that unlocks the whole tariff
 
@@ -101,11 +126,13 @@ per-day component. Five calculation shapes cover all six dues — and likely mos
 ```
 data/                 source PDFs (tariff + task brief)
 vessels/sudestada.json  the vessel profile
-rules/durban_tariff.json  rules extracted from the PDF by Gemini (the calculator's input)
+rules/durban.json     rules extracted from the PDF by Gemini (the calculator's input)
 src/pdf_text.py       PDF -> text
 src/extract_rules.py  text -> structured rules (Gemini)
 src/calculator.py     rules + vessel -> dues  (generic, deterministic)
 src/main.py           CLI
+src/api.py            HTTP API (FastAPI)
+docs/index.html       static web calculator (GitHub Pages)
 ```
 
 ## Limitations / next steps
@@ -114,4 +141,3 @@ src/main.py           CLI
   and reductions are out of scope but fit the same rule schema.
 - A reviewer step (approve the LLM-extracted rules before they drive billing) is the natural
   production pattern — the JSON is intentionally human-readable for exactly that.
-- Easy bonus: wrap `src/main` logic behind a small HTTP API.

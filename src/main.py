@@ -40,7 +40,7 @@ def load(path):
 def main():
     ap = argparse.ArgumentParser(description="Calculate port dues for a vessel.")
     ap.add_argument("vessel", help="path to vessel profile JSON")
-    ap.add_argument("--rules", default="rules/durban_tariff.json",
+    ap.add_argument("--rules", default="rules/durban.json",
                     help="path to extracted tariff rules JSON")
     ap.add_argument("--validate", action="store_true",
                     help="compare results against the published ground truth")

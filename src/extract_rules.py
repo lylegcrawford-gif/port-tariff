@@ -13,6 +13,7 @@ new PDF and re-run — no code changes:
 import argparse
 import json
 import os
+import time
 
 from dotenv import load_dotenv
 from google import genai
@@ -91,16 +92,24 @@ TARIFF DOCUMENT TEXT:
 """
 
 
-def extract(pdf_path, port):
+def extract(pdf_path, port, retries=4):
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
     document = full_text(pdf_path)
     prompt = PROMPT.format(port=port, method_guide=METHOD_GUIDE, document=document)
-    resp = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt,
-        config={"response_mime_type": "application/json", "temperature": 0},
-    )
-    return json.loads(resp.text)
+    for attempt in range(retries):
+        try:
+            resp = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config={"response_mime_type": "application/json", "temperature": 0},
+            )
+            return json.loads(resp.text)
+        except Exception as e:
+            transient = any(c in str(e) for c in ("503", "UNAVAILABLE", "429", "500"))
+            if transient and attempt < retries - 1:
+                time.sleep(2 ** attempt)  # back off: 1s, 2s, 4s
+                continue
+            raise
 
 
 def main():

@@ -1,0 +1,100 @@
+{
+  "port": "Richards Bay",
+  "source_document": "Tariff Book TRANSNET NATIONAL PORTS AUTHORITY April 2024 to March 2025 Twenty Third Edition",
+  "currency": "ZAR",
+  "rules": [
+    {
+      "name": "Light Dues",
+      "tariff_section": "1.1.1",
+      "method": "per_100t",
+      "rate": 117.08,
+      "movements": 1,
+      "minimum": null,
+      "notes": "Charged at the first South African port of call, valid for 60 days within SA waters. Rate for 'All other vessels' applies to Richards Bay."
+    },
+    {
+      "name": "Port Dues",
+      "tariff_section": "4.1.1",
+      "method": "per_100t_plus_period",
+      "basic_rate": 192.73,
+      "period_rate": 57.79,
+      "movements": 1,
+      "minimum": null,
+      "notes": "Charged per 100 GT or part thereof, plus an additional rate per 100 GT or part thereof per 24-hour period. Richards Bay uses the general rate as it's not listed separately."
+    },
+    {
+      "name": "Towage Dues",
+      "tariff_section": "3.6",
+      "method": "banded_per_100t",
+      "bands": [
+        {
+          "min": 0,
+          "max": 2000,
+          "base": 7001.67,
+          "increment_floor": 0,
+          "increment": 0.0
+        },
+        {
+          "min": 2001,
+          "max": 10000,
+          "base": 13020.67,
+          "increment_floor": 2000,
+          "increment": 275.32
+        },
+        {
+          "min": 10001,
+          "max": 50000,
+          "base": 39999.88,
+          "increment_floor": 10000,
+          "increment": 101.08
+        },
+        {
+          "min": 50001,
+          "max": 100000,
+          "base": 79999.76,
+          "increment_floor": 50000,
+          "increment": 30.11
+        },
+        {
+          "min": 100001,
+          "max": null,
+          "base": 103999.7,
+          "increment_floor": 100000,
+          "increment": 23.65
+        }
+      ],
+      "movements": 2,
+      "minimum": null,
+      "notes": "Rates for Richards Bay based on vessel tonnage bands. Charged per service (entering and leaving)."
+    },
+    {
+      "name": "VTS Dues",
+      "tariff_section": "2.1.1",
+      "method": "per_gt",
+      "rate": 0.54,
+      "movements": 1,
+      "minimum": 235.52,
+      "notes": "Charged per GT per port call, with a minimum fee. Richards Bay uses the general 'all ports excluding Durban and Saldanha Bay' rate."
+    },
+    {
+      "name": "Pilotage Dues",
+      "tariff_section": "3.3",
+      "method": "basic_plus_per_100t",
+      "basic_fee": 30960.46,
+      "rate": 10.93,
+      "movements": 2,
+      "minimum": null,
+      "notes": "Charged as a basic fee per service plus a rate per 100 GT or part thereof. Richards Bay specific rates used. Charged for both entering and leaving."
+    },
+    {
+      "name": "Running of Vessel Lines",
+      "tariff_section": "3.8",
+      "method": "basic_plus_per_100t",
+      "basic_fee": 3175.89,
+      "rate": 13.46,
+      "movements": 2,
+      "minimum": null,
+      "notes": "Charged as a basic fee per service plus a rate per 100 GT or part thereof. Richards Bay specific rates used. Charged for both berthing and unberthing as per the Berthing Services tariff."
+    }
+  ]
+}

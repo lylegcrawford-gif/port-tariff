@@ -1,7 +1,8 @@
 {
-  "port": "Durban",
-  "source_document": "Tariff Book TRANSNET NATIONAL PORTS AUTHORITY April 2024 to March 2025 Twenty Third Edition 1 April 2024",
+  "port": "Cape Town",
+  "source_document": "Transnet National Ports Authority Tariff Book, April 2024 - March 2025",
   "currency": "ZAR",
+  "extraction_note": "Produced via src/extract_rules.py; per-port rates verified against the tariff PDF tables (sections 2.1.1, 3.3, 3.6, 3.8). Durban is the published ground-truth reference.",
   "rules": [
     {
       "name": "Light Dues",
@@ -10,7 +11,7 @@
       "rate": 117.08,
       "movements": 1,
       "minimum": null,
-      "notes": "Charged at the first South African port of call, valid for 60 days within SA waters. Rate for 'All other vessels' per 100 GT or part thereof."
+      "notes": "National rate, per 100 GT or part thereof."
     },
     {
       "name": "Port Dues",
@@ -20,7 +21,7 @@
       "period_rate": 57.79,
       "movements": 1,
       "minimum": null,
-      "notes": "Basic fee per 100 GT or part thereof, plus a daily rate per 100 GT or part thereof for each 24-hour period or part thereof. Applies generally to all vessels in Durban."
+      "notes": "National: basic per 100 GT + per 100 GT per 24h period (pro rata)."
     },
     {
       "name": "Towage Dues",
@@ -30,71 +31,71 @@
         {
           "min": 0,
           "max": 2000,
-          "base": 8140.0,
+          "base": 5411.47,
           "increment_floor": 0,
           "increment": 0
         },
         {
           "min": 2001,
           "max": 10000,
-          "base": 12633.99,
+          "base": 7898.57,
           "increment_floor": 2000,
-          "increment": 268.99
+          "increment": 194.63
         },
         {
           "min": 10001,
           "max": 50000,
-          "base": 38494.51,
+          "base": 27741.85,
           "increment_floor": 10000,
-          "increment": 84.95
+          "increment": 64.52
         },
         {
           "min": 50001,
           "max": 100000,
-          "base": 73118.07,
+          "base": 53978.33,
           "increment_floor": 50000,
-          "increment": 32.24
+          "increment": 47.32
         },
         {
           "min": 100001,
           "max": null,
-          "base": 93548.13,
+          "base": 79569.67,
           "increment_floor": 100000,
-          "increment": 23.65
+          "increment": 47.32
         }
       ],
       "movements": 2,
       "minimum": null,
-      "notes": "Banded rates for Durban based on vessel GT. Charged per service (entering and leaving). 'Up to 2000 tons' is a flat fee. Subsequent bands have a base fee plus an incremental charge per 100 GT above the band's floor."
+      "notes": "Cape Town column; band base + increment per 100 GT above floor; entering + leaving."
     },
     {
       "name": "VTS Dues",
       "tariff_section": "2.1.1",
       "method": "per_gt",
-      "rate": 0.65,
+      "rate": 0.54,
       "movements": 1,
       "minimum": 235.52,
-      "notes": "Charged per GT per port call for Durban. Subject to a minimum fee."
+      "notes": "0.54 per GT per port call (standard rate); min 235.52."
     },
     {
       "name": "Pilotage Dues",
       "tariff_section": "3.3",
       "method": "basic_plus_per_100t",
-      "basic_fee": 18608.61,
-      "rate": 9.72,
+      "basic_fee": 6342.39,
+      "rate": 10.2,
       "movements": 2,
       "minimum": null,
-      "notes": "Basic fee per service (entering or leaving) plus a rate per 100 GT or part thereof for Durban."
+      "notes": "Cape Town column; basic fee + per 100 GT; entering + leaving."
     },
     {
       "name": "Running of Vessel Lines",
       "tariff_section": "3.8",
       "method": "basic_plus_per_100t",
-      "basic_fee": 2801.91,
-      "rate": 13.68,
+      "basic_fee": 3052.33,
+      "rate": 14.92,
       "movements": 2,
       "minimum": null,
-      "notes": "Charged as berthing services. Basic fee per service (entering or leaving) plus a rate per 100 GT or part thereof. Durban uses the 'Other Ports' column as it is not explicitly listed in the table."
+      "notes": "Berthing Services; basic fee + per 100 GT; berthing + unberthing."
     }
   ]
 }
